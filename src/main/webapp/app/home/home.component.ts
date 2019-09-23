@@ -51,6 +51,10 @@ export class HomeComponent implements OnInit {
         this.modalRef = this.loginModalService.open();
     }
 
+    deleteCourse(courseName) {
+        this.courseService.delete(courseName).subscribe();
+    }
+
     getAllCourses() {
         debugger;
         this.courseService.getCourseInfo().subscribe(curDto => {

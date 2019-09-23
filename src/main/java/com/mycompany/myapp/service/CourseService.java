@@ -34,19 +34,38 @@ public class CourseService {
 
     public List<CourseDto> findAllCourses() {
 
-        //Cache
-        if (courseDtos.isEmpty()) {
-            List<Course> courses = courseRepository.findAll();
+//        //Cache
+//        if (courseDtos.isEmpty()) {
+//            List<Course> courses = courseRepository.findAll();
+//
+//            for (Course c : courses) {
+//                courseDtos.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
+//            }
+//
+//            return courseDtos;
+//        }
+        List<Course> courses = courseRepository.findAll();
+        List<CourseDto> courseDtos = new ArrayList<>();
 
-            for (Course c : courses) {
-                courseDtos.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
-            }
-
-            return courseDtos;
+        for (Course c : courses) {
+            courseDtos.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
         }
 
         return courseDtos;
     }
+    public List<CourseDto> findAllRequireCourses(int length) {
+
+        List<Course> courses = courseRepository.findAll();
+        List<CourseDto> courseDtos = new ArrayList<>();
+
+        for (Course c : courses)
+            if (c.getCourseName().length() >= length)
+                {
+                    courseDtos.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
+                }
+        return courseDtos;
+    }
+
 
     public List<CourseDto> findAllCoursesDtoFromDB(){
         return courseRepository.findAllCoursesDto();
@@ -81,7 +100,7 @@ public class CourseService {
         Course courseBeingSaved = Course.builder()
             .courseName(course.getCourseName())
             .courseContent(course.getCourseContent())
-            .courseLocation(course.getCourseContent())
+            .courseLocation(course.getCourseLocation())
             .teacherId(course.getTeacherId())
             .build();
 
@@ -95,18 +114,15 @@ public class CourseService {
 
     public void deleteCourse(String courseName) throws Exception{
         Optional<Course> OptionalExistingCourse = courseRepository.findCourseByCourseName(courseName);
-
         if(!OptionalExistingCourse.isPresent()){
             throw new Exception("Course is not exist.");
         }
-
         try {
             courseRepository.delete(OptionalExistingCourse.get());
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
-
 
     public void updateCourse(CourseDto course) throws Exception{
         Optional<Course> OptionalExistingCourse = courseRepository.findCourseByCourseName(course.getCourseName());
@@ -123,21 +139,21 @@ public class CourseService {
 
     }
 
-    public void addCourseToStudent(UserCourse userCourse) throws Exception {
-
-        Optional<User> curUser = userService.getUserWithAuthorities();
-        // 2 find course from course table
-
-
-        UserCourse t1 =  UserCourse.builder()
-            .course(c1)
-            .user(curUser)
-            .build();
-
-        try {
-            UserCourseRepository.saveAndFlush(t1);
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-    }
+//    public void addCourseToStudent(UserCourse userCourse) throws Exception {
+//
+//        Optional<User> curUser = userService.getUserWithAuthorities();
+//        // 2 find course from course table
+//
+//
+//        UserCourse t1 =  UserCourse.builder()
+//            .course(c1)
+//            .user(curUser)
+//            .build();
+//
+//        try {
+//            UserCourseRepository.saveAndFlush(t1);
+//        } catch (Exception e){
+//            throw new Exception(e.getMessage());
+//        }
+//    }
 }
